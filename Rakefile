@@ -3,8 +3,8 @@ $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project/template/ios'
 require './lib/loggly'
 require 'afmotion'
-require 'motion-stump'
 require 'sugarcube-nsdate'
+Bundler.require(:development)
 
 begin
   require 'bundler'

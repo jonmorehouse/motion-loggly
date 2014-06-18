@@ -9,6 +9,7 @@ module LogglyAPI
       url = build_url(tags)
       puts data(msg)
       post(url, data(msg))
+      puts url
     end
 
     def data(msg)

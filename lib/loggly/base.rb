@@ -52,12 +52,20 @@ module LogglyAPI
       return tags.uniq
     end
 
-
-    def post(url, data)
-
-      # post to server
-
-
+    def post(url, data, opts = {})
+      AFMotion::HTTP.post(url, data) do |result|
+        # handle errors
+        if not result.success?
+          if opts.has_key? :retries
+            if opts[:retries] > 0
+              post(url, data, :retries => opts[:retries] - 1)
+            end
+          else
+            post(url, data, :retries => 5)   
+          end
+        end
+      end
     end
+
   end
 end
