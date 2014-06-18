@@ -1,11 +1,23 @@
 module LogglyAPI
   class Event < Base
-    @@endpoint = ""
+    @@endpoint = "inputs"
 
     def send(msg, opts = {})
-      # post to the server
 
+      # generate url with tags
+      tags = normalize_tags opts
+      url = build_url(tags)
+      puts data(msg)
+      post(url, data(msg))
     end
 
+    def data(msg)
+      # add in a timestamp
+      return {
+        :timestamp => NSDate.new.string_with_format(:iso8601),
+        :message => msg
+      }
+
+    end
   end
 end

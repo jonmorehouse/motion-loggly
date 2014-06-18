@@ -4,6 +4,7 @@ require 'motion/project/template/ios'
 require './lib/loggly'
 require 'afmotion'
 require 'motion-stump'
+require 'sugarcube-nsdate'
 
 begin
   require 'bundler'
