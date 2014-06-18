@@ -55,12 +55,21 @@ module LogglyAPI
     def post(url, data, opts = {})
       AFMotion::HTTP.post(url, data) do |result|
         # handle errors
-        if not result.success?
+        if result.success?
+          if @cb
+            @cb.call
+          end
+        else
           if opts.has_key? :retries
             if opts[:retries] > 0
               post(url, data, :retries => opts[:retries] - 1)
+            else
+              if @cb
+                @cb.call(result.error)
+              end
             end
           else
+            puts "RETRY"
             post(url, data, :retries => 5)   
           end
         end
