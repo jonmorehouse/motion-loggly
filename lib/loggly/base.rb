@@ -4,9 +4,6 @@ module LogglyAPI
 
     def initialize(token, opts = {})
 
-      puts :ELEMENT
-
-
     end
 
 
