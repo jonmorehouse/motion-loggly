@@ -5,17 +5,22 @@ describe "Event" do
   end
 
   it "should build a post request and call it with the request class" do
+    puts "\n"
     1.should == 1
-    @semaphore = Dispatch::Semaphore.new 0
-    @event.send("msg", :tag => "msg") do |err|
+    semaphore = Dispatch::Semaphore.new 0
+    @event.send("msg") do
+      puts "finished"
+      puts semaphore.signal
     end
-    Dispatch::Queue.concurrent("test").sync do
-      wait 4
-      @semaphore.signal
+    q = Dispatch::Queue.new("test")
+    q.async do
+      puts "start"
+      sleep 2
+      puts "stop"
+      semaphore.signal
     end
+    semaphore.wait
 
-    @semaphore.wait
-    puts RUBYMOTION_ENV
   end
 
 end
