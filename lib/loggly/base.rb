@@ -8,11 +8,14 @@ module LogglyAPI
       @token = token
       @opts = opts
       @tags = normalize_tags opts
+      @client = AFMotion::Client.build(@@api_root) do
+        response_serializer :json
+      end
     end
 
     def build_url(tags)
 
-      pieces = [@@api_root, @@endpoint, @token].map do |piece|
+      pieces = [@@endpoint, @token].map do |piece|
         piece.rstrip()
       end
 
@@ -53,8 +56,7 @@ module LogglyAPI
     end
 
     def post(url, data, opts = {})
-      AFMotion::HTTP.post(url, data) do |result|
-        response_serializer :json
+      @client.post(url, data) do |result|
         # handle errors
         if result.success?
           if @cb
