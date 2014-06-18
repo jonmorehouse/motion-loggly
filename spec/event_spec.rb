@@ -5,22 +5,14 @@ describe "Event" do
   end
 
   it "should build a post request and call it with the request class" do
-    puts "\n"
+    @event.send("msg") do |result|
+      @result = result.success?
+      resume
+    end
+    wait_max 1.0 do
+      @result.should == true
+    end
     1.should == 1
-    semaphore = Dispatch::Semaphore.new 0
-    @event.send("msg") do
-      puts "finished"
-      puts semaphore.signal
-    end
-    q = Dispatch::Queue.new("test")
-    q.async do
-      puts "start"
-      sleep 2
-      puts "stop"
-      semaphore.signal
-    end
-    semaphore.wait
-
   end
 
 end

@@ -57,7 +57,7 @@ module LogglyAPI
         # handle errors
         if result.success?
           if @cb
-            @cb.call
+            @cb.call result
           end
         else
           if opts.has_key? :retries
@@ -65,11 +65,10 @@ module LogglyAPI
               post(url, data, :retries => opts[:retries] - 1)
             else
               if @cb
-                @cb.call(result.error)
+                @cb.call result
               end
             end
           else
-            puts "RETRY"
             post(url, data, :retries => 5)   
           end
         end
