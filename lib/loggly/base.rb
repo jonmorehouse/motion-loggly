@@ -53,8 +53,8 @@ module LogglyAPI
     end
 
     def post(url, data, opts = {})
-      puts url
       AFMotion::HTTP.post(url, data) do |result|
+        response_serializer :json
         # handle errors
         if result.success?
           if @cb
