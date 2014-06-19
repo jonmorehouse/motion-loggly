@@ -7,7 +7,6 @@ module LogglyAPI
     end
 
     def send(msg, opts = {}, &cb)
-      # generate url with tags
       @cb = cb
       tags = normalize_tags opts
       url = build_url(tags)

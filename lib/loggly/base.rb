@@ -9,6 +9,7 @@ module LogglyAPI
       @tags = normalize_tags opts
       @client = AFMotion::Client.build(@@api_root) do
         response_serializer :json
+        request_serializer :json
       end
     end
 

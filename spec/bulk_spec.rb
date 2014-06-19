@@ -5,49 +5,41 @@ describe "Event" do
     @bulk = LogglyAPI::Bulk.new TOKEN, :tags => "default"
     @stub = stub_request(:post, "http://logs-01.loggly.com/bulk/TOKEN/tag/default")
     @stub.to_return(json: {:response => "ok"})
-    @msgs = []
-      #{
-        #:msg => "msg",
-        #:timestamp => "timestamp"
-      #},
-      #{
-        #:msg => "msg",
-        #:timestamp => "timestamp"
-      #}
-    #]
-
+    @msgs = [
+      {
+        :msg => "msg",
+        :timestamp => "timestamp"
+      },
+      {
+        :msg => "msg",
+        :timestamp => "timestamp"
+      }
+    ]
+    @runner = Proc.new do
+      @bulk.send(@msgs) do |result|
+        @result = result
+        resume
+      end
+    end
   end
 
   it "should request the loggly api with an array of hashes" do
-
-    Dispatch::Queue.main.async do
-      sleep 1
-      resume
+    @runner.call()
+    wait_max 1.0 do
+      @result.object.should == {"response" => "ok"}
+      @result.success?.should == true
     end
-
-    s = Dispatch::Semaphore.new 0
-    q = Dispatch::Queue.new("test")
-    q.async do 
-      s.signal
-      Dispatch::Queue.main.sync do
-        #puts "do something on the main thread, from the background thread"
-      end
-    end
-
-    s.wait
-    wait_max 5 do
-      1.should == 1
-      puts "HERE"
-
-    end
-    
-
   end
 
-  #it "should raise an error when not passed an array" do
-
-  #end
-
+  it "should request the loggly api with the correct parameters" do
+    
+    @stub.with_callback do |headers, body|
+      body.kind_of?(Array).should.be.true
+      puts body.stringify!
+    end
+    @runner.call()
+    wait_max 1.0 do end
+  end
 
 end
 
