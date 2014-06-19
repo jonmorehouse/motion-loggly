@@ -32,10 +32,10 @@ describe "Event" do
   end
 
   it "should request the loggly api with the correct parameters" do
-    
+
     @stub.with_callback do |headers, body|
       body.kind_of?(Array).should.be.true
-      puts body.stringify!
+      body.should == stringify_array(body)
     end
     @runner.call()
     wait_max 1.0 do end
