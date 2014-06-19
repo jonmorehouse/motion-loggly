@@ -6,6 +6,6 @@ gem 'sugarcube'
 
 group :development do
   gem 'motion-stump'
-  gem 'webstub'
+  gem 'webstub', :path => "/Users/jonmorehouse/Documents/programs/webstub"
 end
 
