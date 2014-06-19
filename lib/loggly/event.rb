@@ -1,6 +1,10 @@
 module LogglyAPI
   class Event < Base
-    @@endpoint = "inputs"
+
+    @endpoint = "inputs"
+    class << self 
+      attr_accessor :endpoint
+    end
 
     def send(msg, opts = {}, &cb)
       # generate url with tags

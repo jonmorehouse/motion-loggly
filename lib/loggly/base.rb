@@ -2,7 +2,6 @@ module LogglyAPI
   class Base
 
     @@api_root = "http://logs-01.loggly.com"
-    @@endpoint = ""
 
     def initialize(token, opts = {})
       @token = token
@@ -15,7 +14,7 @@ module LogglyAPI
 
     def build_url(tags)
 
-      pieces = [@@endpoint, @token].map do |piece|
+      pieces = [self.class.endpoint, @token].map do |piece|
         piece.rstrip()
       end
 

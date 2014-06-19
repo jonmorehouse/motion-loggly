@@ -19,13 +19,28 @@ describe "Event" do
   end
 
   it "should request the loggly api with an array of hashes" do
-    
-    #@runner.call()
 
-    wait_max 1.0 do
-      puts "finished"
-      1.should == 1
+    Dispatch::Queue.main.async do
+      sleep 1
+      resume
     end
+
+    s = Dispatch::Semaphore.new 0
+    q = Dispatch::Queue.new("test")
+    q.async do 
+      s.signal
+      Dispatch::Queue.main.sync do
+        #puts "do something on the main thread, from the background thread"
+      end
+    end
+
+    s.wait
+    wait_max 5 do
+      1.should == 1
+      puts "HERE"
+
+    end
+    
 
   end
 

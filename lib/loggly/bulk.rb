@@ -2,7 +2,10 @@ module LogglyAPI
 
   class Bulk < Base
 
-    @@endpoint = "bulk"
+    @endpoint = "bulk"
+    class << self 
+      attr_accessor :endpoint
+    end
 
     # expects an array of objects
     # assumes that you are running a bit more sophisticated. eg: doesn't include timestamps automatically
@@ -12,8 +15,7 @@ module LogglyAPI
       @cb = cb
       tags = normalize_tags opts
       url = build_url(tags)
-      puts url
-      @cb.call("")
+      @cb.call("asdfasdf")
     end
 
   end
