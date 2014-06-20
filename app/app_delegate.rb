@@ -20,4 +20,19 @@ class AppDelegate
     #puts "END"
 
   end
+
+  def self.test_call
+
+    # curl --data  '{"msg":"value"}' -H 'Content-Type: application/json' http://logs-01.loggly.com/inputs/TOKEN/tag/msg,default
+    url = "http://logs-01.loggly.com/inputs/TOKEN/tag/msg,default"
+    AFMotion::JSON.post(url, {:msg => "value"}) do |result|
+      puts "JSON was #{result.success?}"
+    end
+
+    AFMotion::HTTP.post(url, {:msg => "value"}) do |result|
+      puts "HTTP was #{result.success?}"
+    end
+
+
+  end
 end
