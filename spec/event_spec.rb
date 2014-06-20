@@ -2,7 +2,7 @@ describe "Event" do
   extend WebStub::SpecHelpers
   
   before do
-    @event = LogglyAPI::Event.new TOKEN, :tags => "default"
+    @event = Loggly::Event.new TOKEN, :tags => "default"
     @stub = stub_request(:post, "http://logs-01.loggly.com/inputs/TOKEN/tag/default")
     @response = {"response" => "ok"}
     @stub.to_return(json: @response)

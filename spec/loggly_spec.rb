@@ -5,7 +5,7 @@ describe "Loggly" do
     @bulk_counter = 0
 
     # stub event
-    @event = LogglyAPI::Event.new TOKEN
+    @event = Loggly::Event.new TOKEN
     @event.stub! :send do |args, opts|
       @event_counter += 1
       @args = args
@@ -14,7 +14,7 @@ describe "Loggly" do
     @loggly.stub!(:event_logger, return: @event)
 
     # stub bulk
-    @bulk = LogglyAPI::Bulk.new TOKEN 
+    @bulk = Loggly::Bulk.new TOKEN 
     @bulk.stub! :send do |args, opts|
       @bulk_counter += 1
       @args = args

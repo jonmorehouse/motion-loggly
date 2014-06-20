@@ -1,4 +1,4 @@
-module LogglyAPI 
+module Loggly 
 
   class Bulk < Base
 

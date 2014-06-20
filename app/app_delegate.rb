@@ -9,7 +9,7 @@ class AppDelegate
       }
     ]
 
-    bulk = LogglyAPI::Bulk.new token, :tags => "bulk-test"
+    bulk = Loggly::Bulk.new token, :tags => "bulk-test"
     #semaphore = Dispatch::Semaphore.new 0
     #puts "START WAITING"
     #bulk.send(msgs) do |result|

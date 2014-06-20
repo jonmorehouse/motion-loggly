@@ -1,4 +1,4 @@
-module LogglyAPI
+module Loggly
   class Base
 
     @@api_root = "http://logs-01.loggly.com"

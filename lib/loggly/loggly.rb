@@ -32,14 +32,14 @@ class Loggly
   private
   def event_logger
     if not @event_logger
-      @event_logger = LogglyAPI::Event.new @token, @opts
+      @event_logger = Loggly::Event.new @token, @opts
     end
     return @event_logger
   end
 
   def bulk_logger
     if not @bulk_logger
-      @bulk_logger = LogglyAPI::Bulk.new @token, @opts
+      @bulk_logger = Loggly::Bulk.new @token, @opts
     end
     return @bulk_logger
 
