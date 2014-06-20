@@ -4,7 +4,8 @@ describe "Event" do
   before do
     @event = LogglyAPI::Event.new TOKEN, :tags => "default"
     @stub = stub_request(:post, "http://logs-01.loggly.com/inputs/TOKEN/tag/default")
-    @stub.to_return(json: {:response => "ok"})
+    @response = {"response" => "ok"}
+    @stub.to_return(json: @response)
     @msg = {:msg => "message"}
     @runner = Proc.new do
       @event.send(@msg) do |result|
@@ -22,8 +23,8 @@ describe "Event" do
     @runner.call()
 
     wait_max 1.0 do
-      @result.object.should == {"response" => "ok"}
-      #@result.success?.should == true
+      BW::JSON.parse(@result.body).should == {"response" => "ok"}
+      @result.ok?.should == true
     end
   end
 end

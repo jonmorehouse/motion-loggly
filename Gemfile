@@ -4,6 +4,7 @@ gem 'rake'
 gem 'afmotion'
 gem 'sugarcube'
 gem 'bubble-wrap'
+gem 'bubble-wrap-http'
 
 group :development do
   gem 'motion-stump'

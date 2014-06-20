@@ -57,6 +57,7 @@ module LogglyAPI
       BW::HTTP.post("#{@@api_root}/#{url}", {payload: data, format: :json }) do |result|
         if result.ok?
           if @cb
+            #result.body = BW::JSON.parse(result.body)
             @cb.call result
           end
         else

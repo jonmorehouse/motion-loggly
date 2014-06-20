@@ -68,6 +68,7 @@ PLATFORMS
 DEPENDENCIES
   afmotion
   bubble-wrap
+  bubble-wrap-http
   motion-stump
   rake
   sugarcube
