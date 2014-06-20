@@ -24,49 +24,58 @@ module Loggly
     end
 
     protected
-    def normalize_tags(opts = {})
+    def normalize_tags(hash, opts = {})
     
       # check for tags
-      if opts.has_key? :tags
-        if opts[:tags].kind_of?(Array)
-          tags = opts[:tags]
-        elsif opts[:tags].kind_of?(String)
-          tags = [opts[:tags]]
+      if hash.has_key? :tags
+        if hash[:tags].kind_of?(Array)
+          tags = hash[:tags]
+        elsif hash[:tags].kind_of?(String)
+          tags = [hash[:tags]]
         end
       else
         tags = []
       end
 
       # check for a single tag
-      if opts.has_key? :tag
-        tags << opts[:tag]
+      if hash.has_key?(:tag)
+        tags << hash[:tag]
       end
 
       # merge tags with attributed tags
-      if @tags
+      if @tags and opts.has_key?(:object) and hash[:object]
         tags += @tags
       end 
+
+      if hash.has_key?(:parent) and hash[:parent]
+        tags += hash[:parent]
+      end
 
       # remove duplicates
       return tags.uniq
     end
 
     def post(url, data, opts = {})
-
-      # didn't want to have to use bubblewrap/http since the lib is deprecated, but AFMotion just didn't work ...
+      
+      puts "ASDF"
       BW::HTTP.post("#{@@api_root}/#{url}", {payload: data, format: :json }) do |result|
+        puts "ASDF"
         if result.ok?
+          puts "OK"
           if @cb
-            #result.body = BW::JSON.parse(result.body)
-            @cb.call result
-          end
+            Dispatch::Queue.current.async do
+              @cb.call result
+            end
+         end
         else
           if opts.has_key? :retries
             if opts[:retries] > 0
               post(url, data, :retries => opts[:retries] - 1)
             else
               if @cb
-                @cb.call result
+                Dispatch::Queue.current.async do
+                  @cb.call result
+                end
               end
             end
           else

@@ -8,7 +8,8 @@ module Loggly
 
     def send(msg, opts = {}, &cb)
       @cb = cb
-      tags = normalize_tags opts
+      opts[:object] ||= true
+      tags = normalize_tags opts, object: true
       url = build_url(tags)
       post(url, data(msg))
     end
