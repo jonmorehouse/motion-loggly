@@ -6,7 +6,6 @@ describe "Event" do
     @stub = stub_request(:post, "http://logs-01.loggly.com/inputs/TOKEN/tag/default")
     @stub.to_return(json: {:response => "ok"})
     @msg = {:msg => "message"}
-    @msg = "msg"
     @runner = Proc.new do
       @event.send(@msg) do |result|
         @result = result

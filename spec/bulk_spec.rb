@@ -1,4 +1,4 @@
-describe "Event" do
+describe "Bulk" do
   extend WebStub::SpecHelpers
   
   before do
@@ -26,6 +26,7 @@ describe "Event" do
   it "should request the loggly api with an array of hashes" do
     @runner.call()
     wait_max 1.0 do
+      puts @result.success?
       @result.object.should == {"response" => "ok"}
       @result.success?.should == true
     end
