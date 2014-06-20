@@ -19,6 +19,7 @@ Bundler.require(:development)
 # require library
 require './lib/loggly'
 require 'afmotion'
+require 'bubble-wrap'
 require 'sugarcube-nsdate'
 
 Motion::Project::App.setup do |app|

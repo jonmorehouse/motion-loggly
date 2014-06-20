@@ -53,17 +53,9 @@ module LogglyAPI
 
     def post(url, data, opts = {})
 
-      if data.kind_of?(Array)
-        data = stringify_array(data)        
-      else
-        data = stringify_hash(data)
-      end
-
-      AFMotion::HTTP.post("#{@@api_root}/#{url}", data) do |result|
-
-        @cb.call(result)
-        # handle errors
-        if result.success?
+      # didn't want to have to use bubblewrap/http since the lib is deprecated, but AFMotion just didn't work ...
+      BW::HTTP.post("#{@@api_root}/#{url}", {payload: data, format: :json }) do |result|
+        if result.ok?
           if @cb
             @cb.call result
           end
@@ -82,35 +74,5 @@ module LogglyAPI
         end
       end
     end
-
-    def stringify_hash(input)
-      output = Hash.new
-      input.each do |key, value|
-        output[key.to_s] = value 
-      end
-      return output
-    end
-
-    def stringify_array(input)
-
-      output = []
-      input.each do |piece|
-
-        if piece.kind_of?(Array)
-          piece = stringify_array(piece)
-        elsif piece.kind_of?(Hash)
-          piece = stringify_hash(piece)
-        elsif piece.respond_to?("to_s")
-          piece = piece.to_s  
-        else
-          piece = piece
-        end
-        # add piece to output
-        output << piece
-      end
-      return output
-
-    end
-
   end
 end
