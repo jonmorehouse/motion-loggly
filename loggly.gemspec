@@ -1,10 +1,21 @@
-Gem::Specification.new do |s|
+require './lib/version.rb'
 
-  s.name = "loggly"
-  s.version = "0.0.1"
-  s.summary = "Ruby Motion Loggly wrapper"
-  s.description = "A ruby motion wrapper for successfully using loggly in your project"
-  s.authors = ["Jon Morehouse"]
-  s.add_dependency "afmotion", "~> 2.2.0"
+Gem::Specification.new do |gem|
+
+  gem.name = "loggly"
+  gem.version = Loggly::VERSION
+  gem.authors = ["Jon Morehouse"]
+  gem.email = ["morehousej09@gmail.com"]
+  gem.homepage = "https://github.com/jonmorehouse/motion-loggly"
+  gem.license = "MIT"
+  gem.summary = "Ruby Motion Loggly wrapper"
+  gem.description = "
+    A ruby motion wrapper for successfully using loggly in your project
+  "
+
+  # files
+  gem.files = `git ls-files`.split($\)
+  gem.test_files = gem.files.grep(%r{^(spec)/})
+  gem.require_paths = ["lib"]
 
 end

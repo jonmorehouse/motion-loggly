@@ -40,6 +40,7 @@ describe "Bulk" do
     end
     @runner.call()
     wait_max 1.0 do end
+    1.should == 1
   end
 
 end

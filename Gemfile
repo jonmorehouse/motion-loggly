@@ -1,13 +1,12 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-gem 'afmotion'
 gem 'sugarcube'
 gem 'bubble-wrap'
 gem 'bubble-wrap-http'
 
 group :development do
   gem 'motion-stump'
-  gem 'webstub', :path => "/Users/jonmorehouse/Documents/programs/webstub"
+  gem 'webstub', :git => "https://github.com/jonmorehouse/webstub", :branch => "production"
 end
 
