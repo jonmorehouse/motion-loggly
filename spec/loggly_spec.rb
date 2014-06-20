@@ -1,6 +1,6 @@
 describe "Loggly" do
   before do
-    @loggly = Loggly.new TOKEN, {}
+    @loggly = Loggly::Loggly.new TOKEN, {}
     @event_counter = 0
     @bulk_counter = 0
 
