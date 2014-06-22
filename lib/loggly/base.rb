@@ -7,7 +7,6 @@ module Loggly
       @token = token
       @opts = opts
       @tags = normalize_tags opts
-      @queue = Dispatch::Queue.new("com.motion-loggly")
       @client = AFMotion::SessionClient.build @@api_root do
         session_configuration :ephemeral
         request_serializer :json
@@ -86,16 +85,18 @@ module Loggly
 
       # make each request
       hash.each do |url, data|
-        s = Dispatch::Semaphore.new 0
+        queue.async do
+          s = Dispatch::Semaphore.new 0
 
-        # note the afmotion is going to call the request asynchronously on the current thread, so wait for the completion
-        post(url, data) do |result|
-          results.push(result)
-          s.signal
+          # note the afmotion is going to call the request asynchronously on the current thread, so wait for the completion
+          @client.post(url, data) do |result|
+            results.push(result)
+            s.signal
+          end
+
+          # wait for the async afmotion call to finish
+          s.wait
         end
-
-        # wait for the async afmotion call to finish
-        s.wait
       end
 
       # the callback should be called on the last called location
