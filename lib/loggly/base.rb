@@ -30,6 +30,23 @@ module Loggly
     end
 
     protected
+    def normalize_msg(msg)
+
+      if not msg.kind_of?(Hash)
+        msg = {:msg => msg}
+      end
+
+      if not msg.has_key?(:timestamp)
+        msg[:timestamp] = NSDate.new.string_with_format(:iso8601)
+      end
+
+      return msg
+
+    end
+
+
+    # return a list of unique tags 
+    # opts {:tags => [], :tag => "", :object => false, :parent => {}}
     def normalize_tags(hash, opts = {})
     
       # check for tags
@@ -61,10 +78,40 @@ module Loggly
       return tags.uniq
     end
 
+    # hash {:url1 => msg1, :url2 => msg2}
+    def post_from_hash(hash, opts = {}, &cb)
+
+      queue = Dispatch::Queue.new("com.loggly.post")
+      results = []
+
+      # make each request
+      hash.each do |url, data|
+        s = Dispatch::Semaphore.new 0
+
+        # note the afmotion is going to call the request asynchronously on the current thread, so wait for the completion
+        post(url, data) do |result|
+          results.push(result)
+          s.signal
+        end
+
+        # wait for the async afmotion call to finish
+        s.wait
+      end
+
+      # the callback should be called on the last called location
+      current = Dispatch::Queue.current
+      queue.barrier_async do
+        # hop on the correct location and pass the results to the correct block
+        current.async do
+          cb.call(results)
+        end
+      end
+    end
+
+
     def post(url, data, opts = {})
 
       @client.post url, data do |result|
-        puts "finally made it"
         if result.success?
           if @cb
             Dispatch::Queue.current.async do

@@ -11,15 +11,9 @@ module Loggly
       opts[:object] ||= true
       tags = normalize_tags opts, object: true
       url = build_url(tags)
-      post(url, data(msg))
+      msg = normalize_msg(msg)
+      post(url, msg)
     end
 
-    def data(msg)
-      # add in a timestamp
-      return {
-        :timestamp => NSDate.new.string_with_format(:iso8601),
-        :message => msg
-      }
-    end
   end
 end

@@ -10,44 +10,29 @@ module Loggly
     # expects data to be an array of hashes
     def send(msgs, opts = {}, &cb)
       raise ArgumentError, "invalid method name" unless msgs.kind_of?(Array)
+      queue = Dispatch::Queue.current
       cb = cb
       shared_tags = normalize_tags opts, object: true
+      msgs = msgs.each do |msg|
+        normalize_msg(msg)
+      end
+
+      # {[tags] => [msgs]
       tag_hash = parse_tags(msgs)
-      current = Dispatch::Queue.current
+      request_hash = Hash.new
 
-      # client
-      client = AFMotion::SessionClient.build "http://www.espn.com", do |c|
-        c.session_configuration :ephemeral
-        #c.request_serializer :json
-        c.response_serializer :http
-      end
-
-      q = Dispatch::Queue.new("test")
-      results = []
-
+      # map tag_hash to a bunch of requests for post_from_hash to handle :)
       tag_hash.each do |tags, msgs|
-        # grab the tags for this particular instance 
-        tags = (tags + shared_tags).uniq
-
-        # generate the request and do it on the side thread
-        q.async do
-          url = build_url(tags)
-          s = Dispatch::Semaphore.new 0
-
-          client.get("nfl") do |result|
-            puts "\n"
-            puts result.success?
-            s.signal
-          end
-          
-          s.wait
-        end 
+        tags = tags + shared_tags.uniq
+        url = "#{self.class.endpoint}/tags/#{tags.join(",")}"
+        request_hash[url] = msgs
       end
 
-      q.barrier_async do
-        # call the callback on the thread that called this method
-        current.async do
-          cb.call(results)
+      # make a bunch of post requests to submit the correct hashes to the server
+      post_from_hash(request_hash) do |result|
+        # return the callback on the correct method
+        queue.async do
+          cb.call("results")
         end
       end
     end
