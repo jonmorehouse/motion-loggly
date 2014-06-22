@@ -7,6 +7,10 @@ module Loggly
       @token = token
       @opts = opts
       @tags = normalize_tags opts
+      @client = AFMotion::Client.build @@api_root do
+        request_serializer :json
+        response_serializer :http
+      end
     end
 
     def build_url(tags)
@@ -56,12 +60,9 @@ module Loggly
     end
 
     def post(url, data, opts = {})
-      
-      puts "ASDF"
-      BW::HTTP.post("#{@@api_root}/#{url}", {payload: data, format: :json }) do |result|
-        puts "ASDF"
-        if result.ok?
-          puts "OK"
+
+      @client.post url, data do |result|
+        if result.success?
           if @cb
             Dispatch::Queue.current.async do
               @cb.call result

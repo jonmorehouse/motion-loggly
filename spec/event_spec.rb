@@ -23,8 +23,8 @@ describe "Event" do
     @runner.call()
 
     wait_max 1.0 do
-      BW::JSON.parse(@result.body).should == {"response" => "ok"}
-      @result.ok?.should == true
+      BW::JSON.parse(@result.object).should == {"response" => "ok"}
+      @result.success?.should == true
     end
   end
 end

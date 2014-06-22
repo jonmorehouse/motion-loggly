@@ -37,8 +37,8 @@ describe "Bulk" do
       @runner.call()
       wait_max 1.0 do
         puts @results
-        #BW::JSON.parse(@results[0].body).should == @response
-        #@results[0].ok?.should == true
+        BW::JSON.parse(@results[0].object).should == @response
+        @results[0].success?.should == true
         1.should == 1
       end
     end

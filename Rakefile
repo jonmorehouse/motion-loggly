@@ -20,7 +20,7 @@ Bundler.require(:development)
 require './lib/loggly'
 require 'bubble-wrap'
 require 'sugarcube-nsdate'
-require 'bubble-wrap-http'
+require 'afmotion'
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
