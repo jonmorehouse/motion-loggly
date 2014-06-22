@@ -14,7 +14,7 @@ describe "Bulk" do
       },
       {
         :msg => "msg1",
-        #:tag => :tag2
+        :tag => :tag2
       }
     ]
   end
@@ -27,10 +27,6 @@ describe "Bulk" do
       @stub.to_return(json: @response)
       @runner = Proc.new do
         @bulk.send(@msgs) do |results|
-
-          puts "DONE DONE DONE"
-
-
           @results = results
           resume
         end
@@ -40,8 +36,8 @@ describe "Bulk" do
     it "should request the loggly api with an array of hashes" do
       @runner.call()
       wait_max 3.0 do
-        puts "HERE HERE HERE"
-        puts @results
+        puts "FINISHED"
+        #puts @results
         #BW::JSON.parse(@results[0].object).should == @response
         #@results[0].success?.should == true
         1.should == 1

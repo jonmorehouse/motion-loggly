@@ -22,9 +22,7 @@ module Loggly
         c.response_serializer :http
       end
 
-      # 
       q = Dispatch::Queue.new("test")
-      group = Dispatch::Group.new
       results = []
 
       tag_hash.each do |tags, msgs|
@@ -34,18 +32,23 @@ module Loggly
         # generate the request and do it on the side thread
         q.async do
           url = build_url(tags)
+          s = Dispatch::Semaphore.new 0
 
           client.get("nfl") do |result|
-            puts "WORKED WORKED WORKED"
-            semaphore.signal
+            puts "\n"
+            puts result.success?
+            s.signal
           end
+          
+          s.wait
         end 
       end
 
-      group.wait
-      # call the callback on the thread that called this method
-      current.async do
-        cb.call(results)
+      q.barrier_async do
+        # call the callback on the thread that called this method
+        current.async do
+          cb.call(results)
+        end
       end
     end
 
