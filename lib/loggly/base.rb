@@ -7,7 +7,9 @@ module Loggly
       @token = token
       @opts = opts
       @tags = normalize_tags opts
-      @client = AFMotion::Client.build @@api_root do
+      @queue = Dispatch::Queue.new("com.motion-loggly")
+      @client = AFMotion::SessionClient.build @@api_root do
+        session_configuration :ephemeral
         request_serializer :json
         response_serializer :http
       end
@@ -62,13 +64,14 @@ module Loggly
     def post(url, data, opts = {})
 
       @client.post url, data do |result|
+        puts "finally made it"
         if result.success?
           if @cb
             Dispatch::Queue.current.async do
               @cb.call result
             end
          end
-        else
+        else # handle errors
           if opts.has_key? :retries
             if opts[:retries] > 0
               post(url, data, :retries => opts[:retries] - 1)

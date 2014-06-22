@@ -13,10 +13,18 @@ module Loggly
       cb = cb
       shared_tags = normalize_tags opts, object: true
       tag_hash = parse_tags(msgs)
+      current = Dispatch::Queue.current
 
-      queue = Dispatch::Queue.new('loggly')
+      # client
+      client = AFMotion::SessionClient.build "http://www.espn.com", do |c|
+        c.session_configuration :ephemeral
+        #c.request_serializer :json
+        c.response_serializer :http
+      end
+
+      # 
+      q = Dispatch::Queue.new("test")
       group = Dispatch::Group.new
-      semaphore = Dispatch::Semaphore.new 0
       results = []
 
       tag_hash.each do |tags, msgs|
@@ -24,25 +32,21 @@ module Loggly
         tags = (tags + shared_tags).uniq
 
         # generate the request and do it on the side thread
-        queue.async(group) do
+        q.async do
           url = build_url(tags)
-          post(url, msgs) do |result|
-            results.push result
+
+          client.get("nfl") do |result|
+            puts "WORKED WORKED WORKED"
             semaphore.signal
           end
         end 
       end
 
-      # wait for all queues to finish before calling callback block
-      tag_hash.each do 
-        semaphore.wait
-      end
-
+      group.wait
       # call the callback on the thread that called this method
-      Dispatch::Queue.current.async do
+      current.async do
         cb.call(results)
       end
-
     end
 
     def parse_tags(msgs)
