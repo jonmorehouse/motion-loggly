@@ -24,15 +24,15 @@ module Loggly
       # map tag_hash to a bunch of requests for post_from_hash to handle :)
       tag_hash.each do |tags, msgs|
         tags = tags + shared_tags.uniq
-        url = "#{self.class.endpoint}/tags/#{tags.join(",")}"
+        url = build_url(tags)
         request_hash[url] = msgs
       end
 
       # make a bunch of post requests to submit the correct hashes to the server
-      post_from_hash(request_hash) do |result|
+      post_from_hash(request_hash) do |results|
         # return the callback on the correct method
         queue.async do
-          cb.call("results")
+          cb.call(results)
         end
       end
     end

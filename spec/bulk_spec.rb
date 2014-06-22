@@ -5,12 +5,11 @@ describe "Bulk" do
       {
         :msg => "msg1",
         :timestamp => "timestamp1",
-        #:tags => ["tag1"]
+        :tags => ["tag1"]
       },
       {
         :msg => "msg1",
         :timestamp => "timestamp2",
-        #:tag => "tag2"
       },
       {
         :msg => "msg1",
@@ -33,27 +32,26 @@ describe "Bulk" do
       end
     end
 
-    it "should request the loggly api with an array of hashes" do
+    it "successfully post the callbacks to the correct urls" do
       @runner.call()
       wait_max 3.0 do
-        puts "FINISHED"
-        #puts @results
-        #BW::JSON.parse(@results[0].object).should == @response
-        #@results[0].success?.should == true
+        @results[0].success?.should.be.true
+        BW::JSON.parse(@results[0].object).should == @response
         1.should == 1
       end
     end
 
-    #it "should request the loggly api with the correct parameters" do
+    it "should request the loggly api with the correct parameters" do
 
-      #@stub.with_callback do |headers, body|
-        #body.kind_of?(Array).should.be.true
-        #body.should == stringify_array(body)
-      #end
-      #@runner.call()
-      #wait_max 1.0 do end
-      #1.should == 1
-    #end
+      @called = 0
+      @stub.with_callback do |headers, body|
+        puts "ASDF"
+        @called += 1
+      end
+      @runner.call()
+      wait_max 1.0 do end
+      @called.should.equal 3
+    end
   end
 
   describe "Multiple tags for different messages" do

@@ -80,10 +80,9 @@ module Loggly
     # hash {:url1 => msg1, :url2 => msg2}
     def post_from_hash(hash, opts = {}, &cb)
 
-      queue = Dispatch::Queue.new("com.loggly.post")
+      queue = Dispatch::Queue.new("com.loggly.post_from_hash")
       results = []
 
-      # make each request
       hash.each do |url, data|
         queue.async do
           s = Dispatch::Semaphore.new 0
@@ -93,8 +92,6 @@ module Loggly
             results.push(result)
             s.signal
           end
-
-          # wait for the async afmotion call to finish
           s.wait
         end
       end
@@ -102,7 +99,6 @@ module Loggly
       # the callback should be called on the last called location
       current = Dispatch::Queue.current
       queue.barrier_async do
-        # hop on the correct location and pass the results to the correct block
         current.async do
           cb.call(results)
         end
