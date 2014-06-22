@@ -53,6 +53,16 @@ class AppDelegate
     #end
   end
 
+  def self.localhost
+
+    AFMotion::JSON.post("http://172.16.42.42:8080", msg: "charlotte is cute") do |result|
+
+      puts result.success?
+
+    end
+
+
+  end
   def self.client
 
     client = AFMotion::Client.build(@apiroot) do

@@ -5,15 +5,19 @@ GIT
   specs:
     webstub (1.0.1)
 
+PATH
+  remote: /Users/jonmorehouse/.public/afmotion
+  specs:
+    afmotion (2.2.0)
+      motion-cocoapods (>= 1.4.1)
+      motion-require (>= 0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
     activesupport (3.2.18)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
-    afmotion (2.3.1)
-      motion-cocoapods (>= 1.4.1)
-      motion-require (>= 0.1)
     bubble-wrap (1.6.0)
       bubble-wrap-http (= 1.6.0)
     bubble-wrap-http (1.6.0)
@@ -68,7 +72,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  afmotion
+  afmotion!
   bubble-wrap
   bubble-wrap-http
   motion-stump

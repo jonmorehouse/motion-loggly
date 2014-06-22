@@ -4,7 +4,7 @@ gem 'rake'
 gem 'sugarcube'
 gem 'bubble-wrap'
 gem 'bubble-wrap-http'
-gem 'afmotion'
+gem 'afmotion', :path => "/Users/jonmorehouse/.public/afmotion"
 
 group :development do
   gem 'motion-stump'
