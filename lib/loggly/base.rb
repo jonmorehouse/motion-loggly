@@ -107,28 +107,9 @@ module Loggly
 
 
     def post(url, data, opts = {})
-
       @client.post url, data do |result|
-        if result.success?
-          if @cb
-            Dispatch::Queue.current.async do
-              @cb.call result
-            end
-         end
-        else # handle errors
-          if opts.has_key? :retries
-            if opts[:retries] > 0
-              post(url, data, :retries => opts[:retries] - 1)
-            else
-              if @cb
-                Dispatch::Queue.current.async do
-                  @cb.call result
-                end
-              end
-            end
-          else
-            post(url, data, :retries => 5)   
-          end
+        if @cb
+          @cb.call(result)
         end
       end
     end
